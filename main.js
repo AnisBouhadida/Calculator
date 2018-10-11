@@ -1,4 +1,8 @@
-// basic math functions : 
+//Arrays declaration :
+let values = [];
+let op = [];
+
+//Basic math functions : 
 function add(num1, num2) {
       return result = num1 + num2;
 }
@@ -15,8 +19,8 @@ function divide(num1, num2) {
       return result = (num2 == 0) ? "can't divid by 0" : num1 / num2;
 }
 
-// operating function : 
-function operate(num1, operator, num2) {
+//Operating function : 
+function operate(operator, num1, num2) {
 
       switch (operator) {
             case '+':
@@ -35,72 +39,67 @@ function operate(num1, operator, num2) {
       return result;
 }
 
-// Values from digit buttons : 
+//Get values from digit buttons : 
 function getNumber() {
       let digits = document.querySelector(".digits").childNodes;
-      console.log(digits);
       digits.forEach(digit => {
             if (digit.innerText !== undefined) {
-                  console.log(digit.innerText);
-                  let numbers = [];
                   digit.addEventListener('click', (e) => {
-                        numbers.push(digit.innerText);
-                        populateScreen(e);
+                        populateInput(e);
                   });
             }
       });
 }
 
-// Values from operator buttons : 
+
+//Get values from operator buttons : 
 function getOperator() {
       let operators = document.querySelector(".operators").childNodes;
-      console.log(operators);
       operators.forEach(operator => {
             if (operator.innerText !== undefined) {
-                  console.log(operator.innerText);
-                  let op = [];
                   operator.addEventListener('click', (e) => {
-                        if (operator.innerText !== "=") {
-                              op.push(operator.innerText);
-                              populateScreen(e);
+                        if (e.target.innerText === "+" || e.target.innerText === "-") {
+                              values.push(displayValue);
+                              op.push(e.target.innerText);
+                              input.innerText = "";
+                        } else if (e.target.innerText === "*" || e.target.innerText === "/") {
+                              populateInput(e);
                         } else {
-                              calcul();
+                              values.push(displayValue);
+                              evaluateSubFormule();
+                              populateOutput();
                         }
                   });
             }
       });
 }
 
-// Values from option buttons : 
-
-function getOption() {
-      let options = document.querySelector(".options").childNodes;
-      console.log(options);
-      options.forEach(option => {
-            if (option.innerText !== undefined) {
-                  console.log(option.innerText);
-                  option.addEventListener('click', () => {
-                        switch (option.innerText) {
-                              case "Del":
-                                    deleteNumber();
-                                    break;
-                              case "AC":
-                                    clearScreen();
-                                    break;
-                        }
-                  });
+//
+function evaluateSubFormule() {
+      for (let i = 0; i < values.length; i++) {
+            if (values[i].includes("*") || values[i].includes("/")) {
+                  let index = i;
+                  let evaluate = eval(values[index]);
+                  values.splice(index, 1, evaluate);
             }
-      });
+      }
 }
 
-// screen :
+//Screen related functions :
 let input = document.querySelector(".input");
 let output = document.querySelector(".output");
 
-function populateScreen(e) {
+function populateInput(e) {
       input.innerText += e.target.innerText;
-      console.log("valeur de l'input : " + input.innerText);
-      return inputValue = input.innerText;
+      return displayValue = input.innerText;
+}
+
+function populateOutput() {
+      for (let j = 0; j < op.length; j++) {
+            let subResult = operate(op[j], parseFloat(values[0]), parseFloat(values[1]));
+            values.splice(0, 2, subResult);
+      }
+      output.innerText += values.toString();
 }
 
 function clearScreen() {
@@ -110,25 +109,14 @@ function clearScreen() {
                   btn.addEventListener('click', () => {
                         input.innerText = "";
                         output.innerText = "";
+                        values.splice(0, values.length);
+                        op.splice(0, op.length);
                   });
             }
       })
 }
 
-function deleteNumber() {
-
-      let inputList = Array.from(inputValue);
-      inputList.pop();
-      input.innerText = inputList.join("");
-}
-
-// calculator : 
-function calcul() {
-      /([0-9\.]+)([+*/-])([0-9\.]+)/g.exec(inputValue);
-      output.innerText += operate(parseFloat(RegExp.$1), RegExp.$2, parseFloat(RegExp.$3));
-}
-
-// init : 
+//init : 
 getNumber();
 getOperator();
-getOption();
+clearScreen();

@@ -7,13 +7,16 @@ body {
    margin: auto;
    border-radius: 10px;
    background-color: darkgrey;
+   box-shadow: 2px 2px 5px rgb(75, 75, 105),
+      -2px -2px 5px rgb(75, 75, 105);
 }
 
 h1 {
    margin: 0;
    padding: 10px;
-   widows: 25%;
+   width: 25%;
    font-style: italic;
+   text-decoration: underline;
 }
 
 .screen {
@@ -67,6 +70,11 @@ h1 {
    display: grid;
    grid-template-columns: repeat(3, 1fr);
    grid-gap: 5px;
+}
+
+.digits>p:hover,
+.operators>p:hover {
+   background-color: dimgray;
 }
 
 .digits>p {
